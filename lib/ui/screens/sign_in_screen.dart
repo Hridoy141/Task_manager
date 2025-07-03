@@ -1,6 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -118,8 +119,16 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
-  void _onTapForgotPasswordButton() {}
+  void _onTapForgotPasswordButton() {
+    Navigator.pushNamed(context, SignUpScreen.name);
+  }
 
   void _onTapSignUpButton() {
+  }
+  @override
+  void dispose() {
+    _emailTEController.dispose();
+    _passwordTEController.dispose();
+    super.dispose();
   }
 }
