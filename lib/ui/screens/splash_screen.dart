@@ -12,7 +12,6 @@ class SplashScreen extends StatefulWidget {
   @override
   State<SplashScreen> createState() => _SplashScreenState();
 }
-
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
@@ -20,12 +19,10 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     _moveToNextScreen();
   }
-
   Future<void> _moveToNextScreen() async {
     await Future.delayed(Duration(seconds: 2));
     Navigator.pushReplacementNamed(context, SignInScreen.name);
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
