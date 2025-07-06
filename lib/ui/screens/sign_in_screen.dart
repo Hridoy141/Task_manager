@@ -5,6 +5,8 @@ import 'package:task_manager/ui/screens/forgot_password_email_screen.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
+import 'main_nav_bar_holder_screen.dart';
+
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
 
@@ -35,35 +37,32 @@ class _SignInScreenState extends State<SignInScreen> {
                   const SizedBox(height: 80),
                   Text(
                     'Get Started with',
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .titleLarge,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                   const SizedBox(height: 24),
                   TextFormField(
-                      controller: _emailTEController,
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(hintText: 'Email'),
-                      validator: (String ? value) {
-                        String email =  value ?? '';
-                        if (EmailValidator.validate(email) == false) {
-                          return 'Enter a valid email';
-                        }
-                        return null;
+                    controller: _emailTEController,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(hintText: 'Email'),
+                    validator: (String? value) {
+                      String email = value ?? '';
+                      if (EmailValidator.validate(email) == false) {
+                        return 'Enter a valid email';
                       }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 8),
                   TextFormField(
-                      controller: _passwordTEController,
-                      obscureText: true,
-                      decoration: InputDecoration(hintText: 'Password'),
-                      validator: (String ? value) {
-                        if ((value?.length ?? 0) <= 6) {
-                          return 'Enter a valid password';
-                        }
-                        return null;
+                    controller: _passwordTEController,
+                    obscureText: true,
+                    decoration: InputDecoration(hintText: 'Password'),
+                    validator: (String? value) {
+                      if ((value?.length ?? 0) <= 6) {
+                        return 'Enter a valid password';
                       }
+                      return null;
+                    },
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
@@ -91,13 +90,14 @@ class _SignInScreenState extends State<SignInScreen> {
                             ),
                             children: [
                               TextSpan(
-                                  text: 'Sign Up',
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = _onTapSignUpButton
+                                text: 'Sign Up',
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                                recognizer:
+                                    TapGestureRecognizer()
+                                      ..onTap = _onTapSignUpButton,
                               ),
                             ],
                           ),
@@ -118,15 +118,21 @@ class _SignInScreenState extends State<SignInScreen> {
     if (_formKey.currentState!.validate()) {
       // TODO: Sign in with API
     }
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      MainNavBarHolderScreen.name,
+      (predicate) => false,
+    );
   }
 
   void _onTapForgotPasswordButton() {
-   Navigator.pushNamed(context, ForgotPasswordEmailScreen.name);
+    Navigator.pushNamed(context, ForgotPasswordEmailScreen.name);
   }
 
   void _onTapSignUpButton() {
     Navigator.pushNamed(context, SignUpScreen.name);
   }
+
   @override
   void dispose() {
     _emailTEController.dispose();
