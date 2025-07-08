@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/progress_task_list_screen.dart';
 
 import '../widgets/tm_app_bar.dart';
+import 'cancelled_task_list_screen.dart';
+import 'completed_task_list_screen.dart';
 import 'new_task_list_screen.dart';
 
 class MainNavBarHolderScreen extends StatefulWidget {
@@ -13,8 +16,11 @@ class MainNavBarHolderScreen extends StatefulWidget {
 }
 
 class _MainNavBarHolderScreenState extends State<MainNavBarHolderScreen> {
-  List<Widget> _screens = [
-    NewTaskListScreen()
+ final List<Widget> _screens = [
+    NewTaskListScreen(),
+    ProgressTaskListScreen(),
+    CompletedTaskListScreen(),
+    CancelledTaskListScreen(),
   ];
   int _selectedIndex = 0;
 
@@ -25,11 +31,9 @@ class _MainNavBarHolderScreenState extends State<MainNavBarHolderScreen> {
       body: _screens[_selectedIndex],
       bottomNavigationBar: NavigationBar(
         selectedIndex: _selectedIndex,
-        onDestinationSelected: (int index){
+        onDestinationSelected: (int index) {
           _selectedIndex = index;
-          setState(() {
-            
-          });
+          setState(() {});
         },
         destinations: [
           NavigationDestination(
@@ -40,14 +44,8 @@ class _MainNavBarHolderScreenState extends State<MainNavBarHolderScreen> {
             icon: Icon(Icons.arrow_circle_right_outlined),
             label: 'Progress',
           ),
-          NavigationDestination(
-            icon: Icon(Icons.done),
-            label: 'Completed',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.close),
-            label: 'Cancelled',
-          ),
+          NavigationDestination(icon: Icon(Icons.done), label: 'Completed'),
+          NavigationDestination(icon: Icon(Icons.close), label: 'Cancelled'),
         ],
       ),
     );
