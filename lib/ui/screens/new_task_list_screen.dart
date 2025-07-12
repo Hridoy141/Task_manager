@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/task_card.dart';
 import '../widgets/task_count_summary_card.dart';
+import 'add_new_task_screen.dart';
 
 
 class NewTaskListScreen extends StatefulWidget {
@@ -50,7 +51,7 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
   }
 
   void _onTapAddNewTaskButton(){
-
+  Navigator.pushNamed(context, AddNewTaskScreen.name);
   }
 }
 
