@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/controllers/auth_controller.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
-
 import '../screens/update_profile_screen.dart';
 
 class TMAppBar extends StatefulWidget implements PreferredSizeWidget {
@@ -14,6 +14,8 @@ class TMAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _TMAppBarState extends State<TMAppBar> {
+
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -29,7 +31,7 @@ class _TMAppBarState extends State<TMAppBar> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Hridoy Komol Souman',
+                  AuthController.userModel!.firstName,
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -37,7 +39,7 @@ class _TMAppBarState extends State<TMAppBar> {
                     ),
                   ),
                   Text(
-                    'hridoykomolsouman@gmail.com',
+                      AuthController.userModel!.email,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -54,7 +56,8 @@ class _TMAppBarState extends State<TMAppBar> {
     );
   }
 
-  void _onTapLogOutButton() {
+  Future<void> _onTapLogOutButton() async {
+    await AuthController.clearData();
     Navigator.pushNamedAndRemoveUntil(context,
       SignInScreen.name, (predicate) => false,
     );
