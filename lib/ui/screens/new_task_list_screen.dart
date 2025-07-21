@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/models/task_model.dart';
+import 'package:task_manager/data/models/task_status_count_model.dart';
 import 'package:task_manager/data/service/network_caller.dart';
 import 'package:task_manager/data/urls.dart';
 import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
@@ -17,12 +18,17 @@ class NewTaskListScreen extends StatefulWidget {
 
 class _NewTaskListScreenState extends State<NewTaskListScreen> {
   bool _getNewTaskInProgress = false;
+  bool _getTaskStatusCountInProgress = false;
   List<TaskModel> _newTaskList = [];
+  List<TaskStatusCountModel> _taskStatusCountList = [];
 
   @override
   void initState() {
     super.initState();
-    _getNewTaskList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getNewTaskList();
+      _getTaskStatusCountList();
+    });
   }
 
   @override
@@ -35,26 +41,34 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
             const SizedBox(height: 16),
             SizedBox(
               height: 100,
-              child: ListView.separated(
-                itemCount: 4,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return TaskCountSummaryCard(title: 'Progress', count: 12);
-                },
-                separatorBuilder: (context, index) => const SizedBox(width: 4),
+              child: Visibility(
+                visible: _getTaskStatusCountInProgress == false,
+                replacement: CenteredCircularProgressIndicator(),
+                child: ListView.separated(
+                  itemCount: _taskStatusCountList.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return TaskCountSummaryCard(
+                      title: _taskStatusCountList[index].id,
+                      count: _taskStatusCountList[index].count,
+                    );
+                  },
+                  separatorBuilder:
+                      (context, index) => const SizedBox(width: 4),
+                ),
               ),
             ),
             Expanded(
               child: Visibility(
-                visible:  _getNewTaskInProgress == false,
+                visible: _getNewTaskInProgress == false,
                 replacement: CenteredCircularProgressIndicator(),
                 child: ListView.builder(
                   itemCount: _newTaskList.length,
                   itemBuilder: (context, index) {
-                    return TaskCard(taskType: TaskType.tNew,
+                    return TaskCard(
+                      taskType: TaskType.tNew,
                       taskModel: _newTaskList[index],
                     );
-
                   },
                 ),
               ),
@@ -83,10 +97,38 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
       }
       _newTaskList = list;
     } else {
-      showSnackBarMessage(context, response.errorMessage!);
+      if(mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
     }
     _getNewTaskInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Future<void> _getTaskStatusCountList() async {
+    _getTaskStatusCountInProgress = true;
     setState(() {});
+
+    NetworkResponse response = await NetworkCaller.getRequest(
+      url: Urls.getTaskStatusCountUrl,
+    );
+    if (response.isSuccess) {
+      List<TaskStatusCountModel> list = [];
+      for (Map<String, dynamic> jsonData in response.body!['data']) {
+        list.add(TaskStatusCountModel.fromJson(jsonData));
+      }
+      _taskStatusCountList = list;
+    } else {
+      if (mounted) {
+        showSnackBarMessage(context, response.errorMessage!);
+      }
+    }
+    _getTaskStatusCountInProgress = false;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _onTapAddNewTaskButton() {
