@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
-
 import '../../data/models/task_model.dart';
 import '../../data/service/network_caller.dart';
 import '../../data/urls.dart';
@@ -29,22 +28,26 @@ class _ProgressTaskListScreenState extends State<ProgressTaskListScreen> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:8 ),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Visibility(
         visible: _getProgressTasksInProgress == false,
         replacement: CenteredCircularProgressIndicator(),
         child: ListView.builder(
           itemCount: _progressTaskList.length,
           itemBuilder: (context, index) {
-             return TaskCard(
-               taskType: TaskType.progress,
-               taskModel: _progressTaskList[index],
-             );
+            return TaskCard(
+              taskType: TaskType.progress,
+              taskModel: _progressTaskList[index],
+              onStatusUpdate: () {
+                _getProgressTaskList();
+              },
+            );
           },
         ),
       ),
     );
   }
+
   Future<void> _getProgressTaskList() async {
     _getProgressTasksInProgress = true;
     setState(() {});
