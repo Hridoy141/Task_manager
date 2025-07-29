@@ -3,7 +3,7 @@ class  TaskStatusCountModel {
   late int count;
 
   TaskStatusCountModel.fromJson(Map<String, dynamic> jsonData){
-    id = jsonData ['id'] ?? '';
+    id = jsonData ['_id'] ?? '';
     count = jsonData ['sum'] ?? '';
   }
 }

@@ -3,10 +3,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:task_manager/data/models/user_model.dart';
-import 'package:task_manager/data/service/network_caller.dart';
-import 'package:task_manager/data/urls.dart';
-import 'package:task_manager/ui/controllers/auth_controller.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
+import 'package:task_manager/ui/controllers/sign_in_controller.dart';
 import 'package:task_manager/ui/screens/forgot_password_email_screen.dart';
 import 'package:task_manager/ui/screens/main_nav_bar_holder_screen.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
@@ -27,8 +25,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool _signInProgress = false;
-
+  final SignInController _signInController = SignInController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,13 +70,18 @@ class _SignInScreenState extends State<SignInScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  Visibility(
-                    visible: _signInProgress == false,
-                    replacement: CenteredCircularProgressIndicator(),
-                    child: ElevatedButton(
-                      onPressed: _onTapSignInButton,
-                      child: Icon(Icons.arrow_circle_right_outlined),
-                    ),
+                  GetBuilder(
+                    init: _signInController,
+                    builder: (controller) {
+                      return Visibility(
+                        visible: controller.inProgress == false,
+                        replacement: CenteredCircularProgressIndicator(),
+                        child: ElevatedButton(
+                          onPressed: _onTapSignInButton,
+                          child: Icon(Icons.arrow_circle_right_outlined),
+                        ),
+                      );
+                    },
                   ),
                   const SizedBox(height: 32),
                   Center(
@@ -108,8 +110,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                   fontWeight: FontWeight.w700,
                                 ),
                                 recognizer:
-                                TapGestureRecognizer()
-                                  ..onTap = _onTapSignUpButton,
+                                    TapGestureRecognizer()
+                                      ..onTap = _onTapSignUpButton,
                               ),
                             ],
                           ),
@@ -133,33 +135,17 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> _signIn() async {
-    _signInProgress = true;
-    setState(() {});
-
-    Map<String, String> requestBody = {
-      "email": _emailTEController.text.trim(),
-      "password": _passwordTEController.text,
-    };
-
-    NetworkResponse response = await NetworkCaller.postRequest(
-        url: Urls.loginUrl, body: requestBody, isFromLogin: true
+    final bool isSuccess = await _signInController.signIn(
+      _emailTEController.text.trim(),
+      _passwordTEController.text,
     );
 
-    if (response.isSuccess) {
-      UserModel userModel = UserModel.fromJson(response.body!['data']);
-      String token = response.body!['token'];
-
-      await AuthController.saveUserData(userModel, token);
-
-      // Navigator.pushNamedAndRemoveUntil(
-      //     context, MainNavBarHolderScreen.name, (predicate) => false);
-      // Get.to(() =>  MainNavBarHolderScreen());
-      // Get.toNamed(MainNavBarHolderScreen.name);
+    if (isSuccess) {
       Get.offAllNamed(MainNavBarHolderScreen.name);
-    } else {
-      _signInProgress = false;
-      setState(() {});
-      showSnackBarMessage(context, response.errorMessage!);
+    }else {
+      if (mounted) {
+        showSnackBarMessage(context, _signInController.errorMessage!);
+      }
     }
   }
 

@@ -50,6 +50,7 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
                   itemCount: _taskStatusCountList.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
+                    // print(_taskStatusCountList[index].count);
                     return TaskCountSummaryCard(
                       title: _taskStatusCountList[index].id,
                       count: _taskStatusCountList[index].count,
