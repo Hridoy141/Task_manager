@@ -25,7 +25,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final SignInController _signInController = SignInController();
+  final SignInController _signInController = Get.find<SignInController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,8 +70,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  GetBuilder(
-                    init: _signInController,
+                  GetBuilder<SignInController>(
                     builder: (controller) {
                       return Visibility(
                         visible: controller.inProgress == false,

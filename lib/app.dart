@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:task_manager/controller_binder.dart';
 import 'package:task_manager/ui/screens/add_new_task_screen.dart';
 import 'package:task_manager/ui/screens/change_password_screen.dart';
 import 'package:task_manager/ui/screens/forgot_password_email_screen.dart';
@@ -70,6 +71,7 @@ class _TaskManagerAppState extends State<TaskManagerApp> {
         AddNewTaskScreen.name: (context) => AddNewTaskScreen(),
         UpdateProfileScreen.name: (context) => UpdateProfileScreen(),
       },
+      initialBinding: ControllerBinder(),
     );
   }
 }
