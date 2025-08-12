@@ -1,8 +1,15 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:task_manager/ui/screens/pin_verification_screen.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
+
+import '../controllers/get_otp_controller.dart';
+import '../widgets/centered_circular_progress_indicator.dart';
+import '../widgets/snack_bar_message.dart';
 
 class ForgotPasswordEmailScreen extends StatefulWidget {
   const ForgotPasswordEmailScreen({super.key});
@@ -17,6 +24,7 @@ class ForgotPasswordEmailScreen extends StatefulWidget {
 class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
   final TextEditingController _emailTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GetOtpController _getOtpController = Get.find<GetOtpController>();
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +69,17 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _onTapSubmitButton,
-                    child: Icon(Icons.arrow_circle_right_outlined),
+                  GetBuilder<GetOtpController>(
+                      builder: (controller) {
+                        return Visibility(
+                          visible: controller.inProgress == false,
+                          replacement: CenteredCircularProgressIndicator(),
+                          child: ElevatedButton(
+                            onPressed: _onTapSubmitButton,
+                            child: Icon(Icons.arrow_circle_right_outlined),
+                          ),
+                        );
+                      }
                   ),
                   const SizedBox(height: 32),
                   Center(
@@ -103,7 +119,23 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
     // if (_formKey.currentState!.validate()) {
     //   // TODO: Sign in with API
     // }
-    Navigator.pushNamed(context, PinVerificationScreen.name);
+    // Navigator.pushNamed(context, PinVerificationScreen.name);
+    if (_formKey.currentState!.validate()) {
+      _getOtp();
+    }
+  }
+
+  Future<void> _getOtp() async {
+    final bool isSuccess = await _getOtpController.getOtp(_emailTEController.text.trim());
+
+    if (isSuccess) {
+      showSnackBarMessage(context, "An otp has been sent to your email");
+      Navigator.pushNamed(context, PinVerificationScreen.name);
+    } else {
+      if(mounted){
+        showSnackBarMessage(context, _getOtpController.errorMessage!);
+      }
+    }
   }
 
   void _onTapSignInButton() {

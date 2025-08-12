@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/models/task_model.dart';
-import 'package:task_manager/data/service/network_caller.dart';
-import 'package:task_manager/data/urls.dart';
-import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
 import 'package:task_manager/ui/widgets/snack_bar_message.dart';
+import '../../data/models/task_model.dart';
+import '../../data/service/network_caller.dart';
+import '../../data/urls.dart';
+import 'centered_circular_progress_indicator.dart';
 
 enum TaskType { tNew, progress, completed, cancelled }
 
@@ -53,7 +53,7 @@ class _TaskCardState extends State<TaskCard> {
                     _getTaskTypeName(),
                     style: TextStyle(color: Colors.white),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 15),
+                  padding: EdgeInsets.symmetric(horizontal: 16),
                   backgroundColor: _getTaskChipColor(),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
@@ -100,16 +100,16 @@ class _TaskCardState extends State<TaskCard> {
       case TaskType.progress:
         return 'Progress';
       case TaskType.completed:
-        return ('completed');
+        return 'Completed';
       case TaskType.cancelled:
-        return 'cancelled';
+        return 'Cancelled';
     }
   }
 
   void _showEditTaskStatusDialog() {
     showDialog(
       context: context,
-      builder: (cts) {
+      builder: (ctx) {
         return AlertDialog(
           title: Text('Change Status'),
           content: Column(
@@ -165,11 +165,13 @@ class _TaskCardState extends State<TaskCard> {
   Widget? _getTaskStatusTrailing(TaskType type) {
     return widget.taskType == type ? Icon(Icons.check) : null;
   }
-  // TODO : Complete this
-  // void  _onTapTaskStatus(TaskType type) {
-  //   if ( type == widget.taskType) {
+
+  // TODO: Complete this
+  // void _onTapTaskStatus(TaskType type) {
+  //   if (type == widget.taskType) {
   //     return;
   //   }
+  //
   // }
 
   Future<void> _updateTaskStatus(String status) async {
@@ -178,6 +180,7 @@ class _TaskCardState extends State<TaskCard> {
     if (mounted) {
       setState(() {});
     }
+
     NetworkResponse response = await NetworkCaller.getRequest(
       url: Urls.updateTaskStatusUrl(widget.taskModel.id, status),
     );
@@ -186,6 +189,7 @@ class _TaskCardState extends State<TaskCard> {
     if (mounted) {
       setState(() {});
     }
+
     if (response.isSuccess) {
       widget.onStatusUpdate();
     } else {

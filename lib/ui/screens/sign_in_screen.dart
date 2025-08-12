@@ -2,15 +2,14 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_state_manager/src/simple/get_state.dart';
-import 'package:task_manager/ui/controllers/sign_in_controller.dart';
-import 'package:task_manager/ui/screens/forgot_password_email_screen.dart';
-import 'package:task_manager/ui/screens/main_nav_bar_holder_screen.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
-import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
-import 'package:task_manager/ui/widgets/screen_background.dart';
-import 'package:task_manager/ui/widgets/snack_bar_message.dart';
+
+import '../controllers/sign_in_controller.dart';
+import '../widgets/centered_circular_progress_indicator.dart';
+import '../widgets/screen_background.dart';
+import '../widgets/snack_bar_message.dart';
+import 'forgot_password_email_screen.dart';
+import 'main_nav_bar_holder_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -26,6 +25,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final SignInController _signInController = Get.find<SignInController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,16 +71,16 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                   const SizedBox(height: 16),
                   GetBuilder<SignInController>(
-                    builder: (controller) {
-                      return Visibility(
-                        visible: controller.inProgress == false,
-                        replacement: CenteredCircularProgressIndicator(),
-                        child: ElevatedButton(
-                          onPressed: _onTapSignInButton,
-                          child: Icon(Icons.arrow_circle_right_outlined),
-                        ),
-                      );
-                    },
+                      builder: (controller) {
+                        return Visibility(
+                          visible: controller.inProgress == false,
+                          replacement: CenteredCircularProgressIndicator(),
+                          child: ElevatedButton(
+                            onPressed: _onTapSignInButton,
+                            child: Icon(Icons.arrow_circle_right_outlined),
+                          ),
+                        );
+                      }
                   ),
                   const SizedBox(height: 32),
                   Center(
@@ -109,8 +109,8 @@ class _SignInScreenState extends State<SignInScreen> {
                                   fontWeight: FontWeight.w700,
                                 ),
                                 recognizer:
-                                    TapGestureRecognizer()
-                                      ..onTap = _onTapSignUpButton,
+                                TapGestureRecognizer()
+                                  ..onTap = _onTapSignUpButton,
                               ),
                             ],
                           ),
@@ -134,17 +134,15 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> _signIn() async {
-    final bool isSuccess = await _signInController.signIn(
-      _emailTEController.text.trim(),
-      _passwordTEController.text,
-    );
+    final bool isSuccess = await _signInController.signIn(_emailTEController.text.trim(), _passwordTEController.text);
 
     if (isSuccess) {
       Get.offAllNamed(MainNavBarHolderScreen.name);
-    }else {
-      if (mounted) {
+    } else {
+      if(mounted){
         showSnackBarMessage(context, _signInController.errorMessage!);
       }
+
     }
   }
 

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/service/network_caller.dart';
-import 'package:task_manager/data/urls.dart';
-import 'package:task_manager/ui/widgets/centered_circular_progress_indicator.dart';
-import 'package:task_manager/ui/widgets/screen_background.dart';
-import 'package:task_manager/ui/widgets/snack_bar_message.dart';
-import 'package:task_manager/ui/widgets/tm_app_bar.dart';
+
+import '../../data/service/network_caller.dart';
+import '../../data/urls.dart';
+import '../widgets/centered_circular_progress_indicator.dart';
+import '../widgets/screen_background.dart';
+import '../widgets/snack_bar_message.dart';
+import '../widgets/tm_app_bar.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
   const AddNewTaskScreen({super.key});
@@ -98,8 +99,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
 
     NetworkResponse response = await NetworkCaller.postRequest(
       url: Urls.createNewTaskUrl,
-      body: requestBody, isFromLogin: false, 
-
+      body: requestBody,
     );
 
     _addNewTaskInProgress = false;

@@ -18,7 +18,7 @@ class ScreenBackground extends StatelessWidget {
           height: double.maxFinite,
           width: double.maxFinite,
         ),
-          SafeArea(child:child),
+        SafeArea(child: child),
       ],
     );
   }

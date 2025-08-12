@@ -11,11 +11,11 @@ class CancelledTaskListScreen extends StatefulWidget {
   const CancelledTaskListScreen({super.key});
 
   @override
-  State<CancelledTaskListScreen> createState() => _CancelledTaskListScreenState();
+  State<CancelledTaskListScreen> createState() =>
+      _CancelledTaskListScreenState();
 }
 
 class _CancelledTaskListScreenState extends State<CancelledTaskListScreen> {
-
   bool _getCancelledTaskInProgress = false;
   List<TaskModel> _cancelledTaskList = [];
 
@@ -24,10 +24,11 @@ class _CancelledTaskListScreenState extends State<CancelledTaskListScreen> {
     super.initState();
     _getCancelledTaskList();
   }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal:8 ),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Visibility(
         visible: _getCancelledTaskInProgress == false,
         replacement: CenteredCircularProgressIndicator(),
@@ -36,9 +37,10 @@ class _CancelledTaskListScreenState extends State<CancelledTaskListScreen> {
           itemBuilder: (context, index) {
             return TaskCard(
               taskType: TaskType.cancelled,
-              taskModel: _cancelledTaskList[index], onStatusUpdate: () {
+              taskModel: _cancelledTaskList[index],
+              onStatusUpdate: () {
                 _getCancelledTaskList();
-            },
+              },
             );
           },
         ),
@@ -51,7 +53,7 @@ class _CancelledTaskListScreenState extends State<CancelledTaskListScreen> {
     setState(() {});
 
     NetworkResponse response = await NetworkCaller.getRequest(
-      url: Urls.getNewTaskUrl,
+      url: Urls.getNewTasksUrl,
     );
     if (response.isSuccess) {
       List<TaskModel> list = [];
@@ -65,5 +67,4 @@ class _CancelledTaskListScreenState extends State<CancelledTaskListScreen> {
     _getCancelledTaskInProgress = false;
     setState(() {});
   }
-
 }

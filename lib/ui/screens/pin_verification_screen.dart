@@ -1,9 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task_manager/ui/screens/change_password_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
+
+import '../controllers/verify_otp_controller.dart';
+import '../widgets/snack_bar_message.dart';
 
 class PinVerificationScreen extends StatefulWidget {
   const PinVerificationScreen({super.key});
@@ -18,6 +23,7 @@ class PinVerificationScreen extends StatefulWidget {
 class _PinVerificationScreenState extends State<PinVerificationScreen> {
   final TextEditingController _otpTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final VerifyOtpController _verifyOtpController = Get.find<VerifyOtpController>();
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +116,22 @@ class _PinVerificationScreenState extends State<PinVerificationScreen> {
     // if (_formKey.currentState!.validate()) {
     //   // TODO: Sign in with API
     // }
-    Navigator.pushNamed(context, ChangePasswordScreen.name);
+    // Navigator.pushNamed(context, ChangePasswordScreen.name);
+    if (_formKey.currentState!.validate()) {
+      _verifyOtp();
+    }
+  }
+  Future<void> _verifyOtp() async {
+    final bool isSuccess = await _verifyOtpController.verifyOtp(_otpTEController.text.trim());
+
+    if (isSuccess) {
+      showSnackBarMessage(context, "Your otp has been successfully verified");
+      Navigator.pushNamed(context, ChangePasswordScreen.name);
+    } else {
+      if(mounted){
+        showSnackBarMessage(context, _verifyOtpController.errorMessage!);
+      }
+    }
   }
 
   void _onTapSignInButton() {

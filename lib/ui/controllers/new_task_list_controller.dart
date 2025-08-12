@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-
 import '../../data/models/task_model.dart';
 import '../../data/service/network_caller.dart';
 import '../../data/urls.dart';
@@ -7,7 +6,7 @@ import '../../data/urls.dart';
 class NewTaskListController extends GetxController {
   bool _inProgress = false;
 
-  String ? _errorMessage;
+  String? _errorMessage;
 
   List<TaskModel> _newTaskList = [];
 
@@ -23,8 +22,9 @@ class NewTaskListController extends GetxController {
     update();
 
     NetworkResponse response = await NetworkCaller.getRequest(
-      url: Urls.getNewTaskUrl,
+      url: Urls.getNewTasksUrl,
     );
+
     if (response.isSuccess) {
       List<TaskModel> list = [];
       for (Map<String, dynamic> jsonData in response.body!['data']) {
@@ -35,8 +35,10 @@ class NewTaskListController extends GetxController {
     } else {
       _errorMessage = response.errorMessage!;
     }
+
     _inProgress = false;
     update();
+
     return isSuccess;
   }
 }
