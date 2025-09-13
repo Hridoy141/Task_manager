@@ -1,11 +1,19 @@
+import 'package:e_commerce/app/apptheme_.dart';
+import 'package:e_commerce/app/controllers/language_controller.dart';
+import 'package:e_commerce/featues/auth/presentation/screens/sign_in_screen.dart';
+import 'package:e_commerce/featues/auth/presentation/screens/sign_up_screen.dart';
 import 'package:e_commerce/featues/auth/presentation/screens/splash_screen.dart';
+import 'package:e_commerce/featues/auth/presentation/screens/verify_otp_screen.dart';
 import 'package:e_commerce/l10n/app_localizations.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
 
 class CraftyBay extends StatefulWidget {
   const CraftyBay({super.key});
+
+  static final LanguageController languageController = LanguageController();
 
   @override
   State<CraftyBay> createState() => _CraftyBayState();
@@ -16,19 +24,43 @@ class _CraftyBayState extends State<CraftyBay> {
   static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(
     analytics: analytics,
   );
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      localizationsDelegates: [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      navigatorObservers: [observer],
-      locale: Locale('bn'),
-      supportedLocales: [Locale('en'), Locale('bn')],
-      home: SplashScreen(),
+    return GetBuilder(
+      init: CraftyBay.languageController,
+      builder: (languageController) {
+        return MaterialApp(
+          localizationsDelegates: [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          navigatorObservers: [observer],
+          locale: languageController.currentLocales,
+          supportedLocales: languageController.supportedLocales,
+          theme: AppTheme.lightThemeData,
+          darkTheme: AppTheme.darkThemeData,
+          themeMode: ThemeMode.light,
+          home: SplashScreen(),
+          initialRoute: SplashScreen.name,
+          onGenerateRoute: (settings) {
+            late Widget screen;
+
+            if (settings.name == SplashScreen.name) {
+              screen = SplashScreen();
+            } else if (settings.name == SignInScreen.name) {
+              screen = SignInScreen();
+            }else if (settings.name == SignUpScreen.name) {
+              screen = SignUpScreen();
+            }else if (settings.name == VerifyOtpScreen.name) {
+              screen = VerifyOtpScreen();
+            }
+            return MaterialPageRoute(builder: (ctx) => screen);
+          },
+        );
+      },
     );
   }
 }
