@@ -1,3 +1,4 @@
+import 'package:e_commerce/featues/products/product_list_screen.dart';
 import 'package:e_commerce/featues/shared/presentation/screens/bottom_nav_holder_screen.dart';
 import 'package:flutter/material.dart';
 import '../featues/auth/presentation/screens/sign_in_screen.dart';
@@ -18,6 +19,10 @@ MaterialPageRoute onGenerateRoute(RouteSettings settings) {
     screen = VerifyOtpScreen();
   } else if (settings.name == BottomNavHolderScreen.name) {
     screen = BottomNavHolderScreen();
+  }
+  else if (settings.name == ProductListScreen.name) {
+     final String category = settings.arguments as String;
+    screen = ProductListScreen(categoryName: category);
   }
   return MaterialPageRoute(builder: (ctx) => screen);
 }
