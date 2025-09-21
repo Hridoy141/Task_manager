@@ -69,7 +69,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                       Card(
                                         color: AppColors.themeColor,
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(4),
+                                          borderRadius: BorderRadius.circular(
+                                            4,
+                                          ),
                                         ),
                                         child: Padding(
                                           padding: const EdgeInsets.all(2),
@@ -96,16 +98,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           colors: ['Red', 'White', 'Block'],
                           onSelected: (String color) {},
                         ),
-                        const SizedBox(height: 8,),
+                        const SizedBox(height: 8),
                         Text('Size', style: TextStyle(fontSize: 18)),
                         SizePicker(
                           sizes: ['S', 'M', 'L', 'XL', 'XXL'],
                           onSelected: (String size) {},
                         ),
-                        const SizedBox(height: 8,),
-                        Text('Description', style: TextStyle(
-                          fontSize: 18,
-                        ),),
+                        const SizedBox(height: 8),
+                        Text('Description', style: TextStyle(fontSize: 18)),
                         Text(
                           '''Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book''',
                           style: TextStyle(

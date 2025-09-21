@@ -4,6 +4,9 @@ import 'package:e_commerce/featues/shared/presentation/controllers/main_nav_cont
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 
+import '../../../carts/presentation/screen/cart_screen.dart';
+import '../../../wishilst/presenttation/screen/wish_list_screen.dart';
+
 class BottomNavHolderScreen extends StatefulWidget {
   static const String name = '/bottom-nav-holder';
 
@@ -17,8 +20,8 @@ class _BottomNavHolderScreenState extends State<BottomNavHolderScreen> {
   final List<Widget> _screen = [
     HomeScreen(),
     CategoryListScreen(),
-    HomeScreen(),
-    HomeScreen(),
+    CartScreen(),
+    WishListScreen(),
   ];
   @override
   Widget build(BuildContext context) {

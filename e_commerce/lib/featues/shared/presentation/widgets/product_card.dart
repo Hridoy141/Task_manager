@@ -33,7 +33,7 @@ class ProductCard extends StatelessWidget {
                     )
                 ),
                 child: Image.asset(
-                  AssetPaths.dummyImageSvg,
+                  AssetPaths.dummyImagePng,
                   height: 80,
                   width: 140,
                 ),
