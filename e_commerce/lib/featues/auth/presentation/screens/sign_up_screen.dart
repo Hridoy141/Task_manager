@@ -1,7 +1,12 @@
-import 'package:e_commerce/app/extensions/localization_extension.dart';
+import 'package:e_commerce/featues/auth/data/models/sign_up_request_model.dart';
+import 'package:e_commerce/featues/auth/presentation/controllers/sign_up_controller.dart';
 import 'package:e_commerce/featues/auth/presentation/screens/verify_otp_screen.dart';
 import 'package:e_commerce/featues/auth/presentation/widgets/app_logo.dart';
+import 'package:e_commerce/featues/shared/presentation/widgets/snack_bar_message.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -19,6 +24,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _mobileTEController = TextEditingController();
   final TextEditingController _addressTEController = TextEditingController();
   final TextEditingController _passwordTEController = TextEditingController();
+
+  final SignUpController _signUpController = Get.find<SignUpController>();
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
@@ -33,10 +40,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 24),
                 AppLogo(width: 80),
                 const SizedBox(height: 12),
-                Text(
-                  'Create new account',
-                  style: textTheme.titleLarge,
-                ),
+                Text('Create new account', style: textTheme.titleLarge),
                 Text(
                   'Please enter your details for new account ',
                   style: textTheme.bodyLarge?.copyWith(color: Colors.grey),
@@ -79,9 +83,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   decoration: InputDecoration(hintText: 'Password'),
                 ),
                 const SizedBox(height: 16),
-                FilledButton(
-                  onPressed: _onTapSignUpButton,
-                  child: Text('Sign Up'),
+                GetBuilder<SignUpController>(
+                  builder: (controller) {
+                    return Visibility(
+                      visible: controller.signUpInProgress == false,
+                      replacement: CircularProgressIndicator(),
+                      child: FilledButton(
+                        onPressed: _onTapSignUpButton,
+                        child: Text('Sign Up'),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
                 TextButton(
@@ -97,8 +109,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   void _onTapSignUpButton() {
-    Navigator.pushNamed(context, VerifyOtpScreen.name);
+    // TODO: Validate form
+    _signup();
   }
+
+  Future<void> _signup() async {
+    SignUpRequestModel model = SignUpRequestModel(
+      firstName: _firstNameTEController.text.trim(),
+      lastName: _lastNameTEController.text.trim(),
+      email: _emailTEController.text.trim(),
+      password: _passwordTEController.text,
+      city: _addressTEController.text.trim(),
+      phone: _mobileTEController.text.trim(),
+    );
+    final bool isSuccess = await _signUpController.signUp(model);
+    if (isSuccess) {
+      showSnackBarMessage(context, 'Sign up successful! Please login');
+      Navigator.pushNamed(context, VerifyOtpScreen.name);
+    } else {
+      showSnackBarMessage(context, _signUpController.errorMessage!);
+    }
+  }
+
   void _onTapBackToLoginButton() {
     Navigator.pop(context);
   }

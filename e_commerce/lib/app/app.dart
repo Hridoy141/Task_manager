@@ -13,6 +13,8 @@ import 'package:get/get_state_manager/src/simple/get_state.dart';
 class CraftyBay extends StatefulWidget {
   const CraftyBay({super.key});
 
+  static final GlobalKey<NavigatorState> navigatorKey =
+  GlobalKey<NavigatorState>();
   static final LanguageController languageController = LanguageController();
 
   @override
@@ -31,6 +33,7 @@ class _CraftyBayState extends State<CraftyBay> {
       init: CraftyBay.languageController,
       builder: (languageController) {
         return GetMaterialApp(
+          navigatorKey: CraftyBay.navigatorKey,
           localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
