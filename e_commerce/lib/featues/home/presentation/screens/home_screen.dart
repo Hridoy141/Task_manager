@@ -1,4 +1,5 @@
 import 'package:e_commerce/app/asset_paths.dart';
+import 'package:e_commerce/featues/home/presentation/controllers/home_sildes_controller.dart';
 import 'package:e_commerce/featues/shared/presentation/controllers/main_nav_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -40,7 +41,16 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 16),
               _buildSearchBar(),
               const SizedBox(height: 16),
-              HomeBannerSlider(),
+              GetBuilder<HomeSliderController>(
+                builder: (controller) {
+                  if(controller.getSlidersInProgress) {
+                    return SizedBox(
+                        height: 180,
+                        child: CircularProgressIndicator());
+                  }
+                  return HomeBannerSlider(sliders: controller.sliders);
+                }
+              ),
               const SizedBox(height: 16),
               _buildSectionHeader(
                 title: 'Categories',
