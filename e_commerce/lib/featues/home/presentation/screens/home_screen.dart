@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import '../../../shared/presentation/controllers/category_controller.dart';
+import '../../../shared/presentation/widgets/centered_circular_progress.dart';
 import '../../../shared/presentation/widgets/product_card.dart';
 import '../../../shared/presentation/widgets/product_category_item.dart';
 import '../widgets/app_bar_icon_button.dart';
@@ -75,21 +77,32 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildCategoryList() {
     return SizedBox(
       height: 100,
-      child: ListView.separated(
-        itemCount: 10,
-        primary: false,
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return ProductCategoryItem();
-        },
-        separatorBuilder: (context, index) {
-          return SizedBox(width: 10);
-        },
+      child: GetBuilder<CategoryController>(
+          builder: (controller) {
+            if (controller.isInitialLoading) {
+              return CenteredCircularProgress();
+            }
+            return ListView.separated(
+              itemCount: controller.categoryList.length > 10 ? 10 : controller
+                  .categoryList.length,
+              primary: false,
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return ProductCategoryItem(
+                  categoryModel: controller.categoryList[index],
+                );
+              },
+              separatorBuilder: (context, index) {
+                return SizedBox(width: 10);
+              },
+            );
+          }
       ),
     );
   }
-  
+
+
   Widget _buildNewProductList() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,

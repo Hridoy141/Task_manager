@@ -4,7 +4,7 @@ import 'package:e_commerce/core/services/network_caller.dart';
 import 'package:e_commerce/featues/auth/data/models/login_request_model.dart';
 import 'package:get/get.dart';
 
-import '../../../../features/shared/data/models/user_model.dart';
+import '../../../shared/data/models/user_model.dart';
 
 class LoginController extends GetxController {
   bool _logInProgress = false;

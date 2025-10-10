@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../features/shared/data/models/user_model.dart';
+import '../../featues/shared/data/models/user_model.dart';
 
 class AuthController {
   final String _tokenKey = 'access-token';

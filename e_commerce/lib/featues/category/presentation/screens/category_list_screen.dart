@@ -1,8 +1,11 @@
 import 'package:e_commerce/featues/shared/presentation/controllers/main_nav_controller.dart';
+import 'package:e_commerce/featues/shared/presentation/widgets/centered_circular_progress.dart';
 import 'package:e_commerce/featues/shared/presentation/widgets/product_category_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+
+import '../../../shared/presentation/controllers/category_controller.dart';
 
 class CategoryListScreen extends StatefulWidget {
   const CategoryListScreen({super.key});
@@ -12,6 +15,23 @@ class CategoryListScreen extends StatefulWidget {
 }
 
 class _CategoryListScreenState extends State<CategoryListScreen> {
+  final ScrollController _scrollController = ScrollController();
+  final CategoryController _categoryController = Get.find<CategoryController>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.addListener(_loadMore);
+    });
+  }
+
+  void _loadMore() {
+    if (_scrollController.position.extentAfter < 400) {
+      _categoryController.getCategoryList();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopScope(
@@ -25,19 +45,48 @@ class _CategoryListScreenState extends State<CategoryListScreen> {
           title: Text('Categories'),
           leading: BackButton(onPressed: _backToHome),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
-            ),
-            itemCount: 10,
-            itemBuilder: (context, index) {
-              return FittedBox(child: ProductCategoryItem());
-            },
-          ),
+        body: GetBuilder(
+          init: _categoryController,
+          builder: (_) {
+            if (_categoryController.isInitialLoading) {
+              return CenteredCircularProgress();
+            }
+            return Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        _categoryController.refreshCategoryList();
+                      },
+                      child: GridView.builder(
+                        controller: _scrollController,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                        ),
+                        itemCount: _categoryController.categoryList.length,
+                        itemBuilder: (context, index) {
+                          return FittedBox(
+                            child: ProductCategoryItem(
+                              categoryModel:
+                                  _categoryController.categoryList[index],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Visibility(
+                    visible: _categoryController.getCategoryInProgress,
+                    child: LinearProgressIndicator(),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

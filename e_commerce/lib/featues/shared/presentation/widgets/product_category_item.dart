@@ -1,9 +1,12 @@
 import 'package:e_commerce/featues/products/presentation/screens/product_list_screen.dart';
+import 'package:e_commerce/featues/shared/data/models/category_model.dart';
 import 'package:flutter/material.dart';
 import '../../../../app/app_colors.dart';
 
 class ProductCategoryItem extends StatelessWidget {
-  const ProductCategoryItem({super.key});
+  const ProductCategoryItem({super.key, required this.categoryModel});
+  
+  final CategoryModel categoryModel;
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +15,7 @@ class ProductCategoryItem extends StatelessWidget {
         Navigator.pushNamed(
           context,
           ProductListScreen.name,
-          arguments: 'Electronics',
+          arguments: categoryModel.title,
         );
       },
       child: Column(
@@ -24,10 +27,12 @@ class ProductCategoryItem extends StatelessWidget {
               color: AppColors.themeColor.withOpacity(0.15),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(Icons.computer, size: 32, color: AppColors.themeColor),
+            child: Image.network(categoryModel.icon, height: 32, width: 32, errorBuilder: (_, __, ___){
+              return Icon(Icons.error_outline,size: 32,);
+            },),
           ),
           Text(
-            'Electronics',
+            _getTitleText(categoryModel.title),
             style: Theme.of(
               context,
             ).textTheme.bodyLarge?.copyWith(color: AppColors.themeColor),
@@ -35,5 +40,11 @@ class ProductCategoryItem extends StatelessWidget {
         ],
       ),
     );
+  }
+  String _getTitleText(String text) {
+    if (text.length < 10) {
+      return text;
+    }
+    return "${text.substring(0, 9)}..";
   }
 }

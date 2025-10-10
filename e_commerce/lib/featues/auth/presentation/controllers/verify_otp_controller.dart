@@ -5,6 +5,8 @@ import 'package:e_commerce/featues/auth/data/models/verify_otp_request_model.dar
 import 'package:e_commerce/features/shared/data/models/user_model.dart';
 import 'package:get/get.dart';
 
+import '../../../shared/data/models/user_model.dart';
+
 class VerifyOtpController extends GetxController {
   bool _verifyOtpInProgress = false;
   String? _errorMessage;

@@ -7,6 +7,7 @@ import 'package:e_commerce/featues/shared/presentation/controllers/main_nav_cont
 import 'package:get/get.dart';
 
 import '../featues/auth/presentation/controllers/verify_otp_controller.dart';
+import '../featues/shared/presentation/controllers/category_controller.dart';
 
 class ControllerBinder extends Bindings {
   @override
@@ -18,6 +19,7 @@ class ControllerBinder extends Bindings {
     Get.put( VerifyOtpController());
     Get.put( LoginController());
     Get.put( HomeSliderController());
+    Get.put(CategoryController());
   }
 
 }
